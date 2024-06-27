@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Registration System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .name-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .name-list li {
+            margin: 10px 0;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Daily Registration</h1>
+    <form id="registrationForm">
+        <ul class="name-list">
+            <li><input type="checkbox" id="Cowger" name="Cowger"> <label for="Cowger">Cowger</label></li>
+            <li><input type="checkbox" id="Froggy" name="Froggy"> <label for="Froggy">Froggy</label></li>
+            <li><input type="checkbox" id="Amber" name="Amber"> <label for="Amber">Amber</label></li>
+            <li><input type="checkbox" id="Pikachu" name="Pikachu"> <label for="Pikachu">Pikachu</label></li>
+            <li><input type="checkbox" id="George" name="George"> <label for="George">George</label></li>
+            <li><input type="checkbox" id="Catty" name="Catty"> <label for="Catty">Catty</label></li>
+            <li><input type="checkbox" id="CaptainBarnacles" name="CaptainBarnacles"> <label for="CaptainBarnacles">Captain Barnacles</label></li>
+            <li><input type="checkbox" id="BOGGET" name="BOGGET"> <label for="BOGGET">BOGGET</label></li>
+            <li><input type="checkbox" id="Rikete" name="Rikete"> <label for="Rikete">Rikete</label></li>
+            <li><input type="checkbox" id="Ri" name="Ri"> <label for="Ri">Ri</label></li>
+            <li><input type="checkbox" id="Chacha" name="Chacha"> <label for="Chacha">Cha cha</label></li>
+            <li><input type="checkbox" id="Ariel" name="Ariel"> <label for="Ariel">Ariel</label></li>
+            <li><input type="checkbox" id="Snowy" name="Snowy"> <label for="Snowy">Snowy</label></li>
+            <li><input type="checkbox" id="Doggy" name="Doggy"> <label for="Doggy">Doggy</label></li>
+            <li><input type="checkbox" id="Beary" name="Beary"> <label for="Beary">Beary</label></li>
+            <li><input type="checkbox" id="Baymax" name="Baymax"> <label for="Baymax">Baymax</label></li>
+            <li><input type="checkbox" id="Paddington" name="Paddington"> <label for="Paddington">Paddington</label></li>
+            <li><input type="checkbox" id="Tapir" name="Tapir"> <label for="Tapir">Tapir</label></li>
+            <li><input type="checkbox" id="Bwaly" name="Bwaly"> <label for="Bwaly">Bwaly</label></li>
+        </ul>
+        <button type="button" class="submit-btn" onclick="submitRegistration()">Submit</button>
+    </form>
+</div>
+
+<script>
+    function submitRegistration() {
+        const form = document.getElementById('registrationForm');
+        const formData = new FormData(form);
+        const registeredNames = [];
+        for (let [name, value] of formData.entries()) {
+            registeredNames.push(name);
+        }
+        console.log('Registered Names:', registeredNames);
+    }
+</script>
+
+</body>
+</html>
