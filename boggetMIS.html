@@ -9,25 +9,43 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
         }
         h1 {
             text-align: center;
         }
-        .name-list {
-            list-style-type: none;
-            padding: 0;
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
         }
-        .name-list li {
-            margin: 10px 0;
+        .grid-item {
+            position: relative;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border 0.3s ease;
+        }
+        .grid-item.selected {
+            border-color: blue;
+        }
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
         .last-seen {
-            font-size: 0.9em;
-            color: #555;
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.8em;
         }
     </style>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
@@ -39,124 +57,27 @@
 
 <div class="container">
     <h1>Daily Registration</h1>
-    <form id="registrationForm">
-        <ul class="name-list">
-            <li>
-                <input type="checkbox" id="Cowger" name="Cowger" onchange="updateTimestamp('Cowger')"> 
-                <label for="Cowger">Cowger</label> 
-                <span class="last-seen" id="lastSeenCowger"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Froggy" name="Froggy" onchange="updateTimestamp('Froggy')"> 
-                <label for="Froggy">Froggy</label> 
-                <span class="last-seen" id="lastSeenFroggy"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Amber" name="Amber" onchange="updateTimestamp('Amber')"> 
-                <label for="Amber">Amber</label> 
-                <span class="last-seen" id="lastSeenAmber"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Pikachu" name="Pikachu" onchange="updateTimestamp('Pikachu')"> 
-                <label for="Pikachu">Pikachu</label> 
-                <span class="last-seen" id="lastSeenPikachu"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="George" name="George" onchange="updateTimestamp('George')"> 
-                <label for="George">George</label> 
-                <span class="last-seen" id="lastSeenGeorge"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Catty" name="Catty" onchange="updateTimestamp('Catty')"> 
-                <label for="Catty">Catty</label> 
-                <span class="last-seen" id="lastSeenCatty"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="CaptainBarnacles" name="CaptainBarnacles" onchange="updateTimestamp('CaptainBarnacles')"> 
-                <label for="CaptainBarnacles">Captain Barnacles</label> 
-                <span class="last-seen" id="lastSeenCaptainBarnacles"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="BOGGET" name="BOGGET" onchange="updateTimestamp('BOGGET')"> 
-                <label for="BOGGET">BOGGET</label> 
-                <span class="last-seen" id="lastSeenBOGGET"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Rikete" name="Rikete" onchange="updateTimestamp('Rikete')"> 
-                <label for="Rikete">Rikete</label> 
-                <span class="last-seen" id="lastSeenRikete"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Ri" name="Ri" onchange="updateTimestamp('Ri')"> 
-                <label for="Ri">Ri</label> 
-                <span class="last-seen" id="lastSeenRi"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Chacha" name="Chacha" onchange="updateTimestamp('Chacha')"> 
-                <label for="Chacha">Cha cha</label> 
-                <span class="last-seen" id="lastSeenChacha"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Ariel" name="Ariel" onchange="updateTimestamp('Ariel')"> 
-                <label for="Ariel">Ariel</label> 
-                <span class="last-seen" id="lastSeenAriel"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Snowy" name="Snowy" onchange="updateTimestamp('Snowy')"> 
-                <label for="Snowy">Snowy</label> 
-                <span class="last-seen" id="lastSeenSnowy"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Doggy" name="Doggy" onchange="updateTimestamp('Doggy')"> 
-                <label for="Doggy">Doggy</label> 
-                <span class="last-seen" id="lastSeenDoggy"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Beary" name="Beary" onchange="updateTimestamp('Beary')"> 
-                <label for="Beary">Beary</label> 
-                <span class="last-seen" id="lastSeenBeary"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Baymax" name="Baymax" onchange="updateTimestamp('Baymax')"> 
-                <label for="Baymax">Baymax</label> 
-                <span class="last-seen" id="lastSeenBaymax"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Paddington" name="Paddington" onchange="updateTimestamp('Paddington')"> 
-                <label for="Paddington">Paddington</label> 
-                <span class="last-seen" id="lastSeenPaddington"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Tapir" name="Tapir" onchange="updateTimestamp('Tapir')"> 
-                <label for="Tapir">Tapir</label> 
-                <span class="last-seen" id="lastSeenTapir"></span>
-            </li>
-            <li>
-                <input type="checkbox" id="Bwaly" name="Bwaly" onchange="updateTimestamp('Bwaly')"> 
-                <label for="Bwaly">Bwaly</label> 
-                <span class="last-seen" id="lastSeenBwaly"></span>
-            </li>
-        </ul>
-    </form>
+    <div class="grid-container" id="gridContainer">
+        <!-- Photos will be loaded here dynamically -->
+    </div>
 </div>
 
 <script>
     // Firebase configuration
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID",
-        measurementId: "YOUR_MEASUREMENT_ID"
+        
     };
-    
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    // Function to format timestamp
+    const names = [
+        "Amber", "Ariel", "Baymax", "Beary", "BOGGET", "Bwaly", 
+        "CaptainBarnacles", "Catty", "Chacha", "Cowger", "Doggy", 
+        "Froggy", "George", "Pikachu", "Ri", "Rikete", "Snowy", 
+        "Tapir", "Paddington"
+    ];
+
     function formatTimestamp(timestamp) {
         const now = new Date();
         const date = new Date(timestamp * 1000);
@@ -189,13 +110,6 @@
     }
 
     function loadLastSeen() {
-        const names = [
-            "Cowger", "Froggy", "Amber", "Pikachu", "George", "Catty", 
-            "CaptainBarnacles", "BOGGET", "Rikete", "Ri", "Chacha", 
-            "Ariel", "Snowy", "Doggy", "Beary", "Baymax", "Paddington", 
-            "Tapir", "Bwaly"
-        ];
-
         names.forEach(name => {
             firebase.database().ref('boggetMIS/' + name).get().then((snapshot) => {
                 if (snapshot.exists()) {
@@ -211,7 +125,33 @@
         });
     }
 
+    function createGridItems() {
+        const gridContainer = document.getElementById('gridContainer');
+        names.forEach(name => {
+            const gridItem = document.createElement('div');
+            gridItem.className = 'grid-item';
+            gridItem.id = name;
+            gridItem.onclick = () => {
+                gridItem.classList.toggle('selected');
+                updateTimestamp(name);
+            };
+
+            const img = document.createElement('img');
+            img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${name}.png`;
+            img.alt = name;
+
+            const lastSeen = document.createElement('span');
+            lastSeen.className = 'last-seen';
+            lastSeen.id = 'lastSeen' + name;
+
+            gridItem.appendChild(img);
+            gridItem.appendChild(lastSeen);
+            gridContainer.appendChild(gridItem);
+        });
+    }
+
     window.onload = function() {
+        createGridItems();
         loadLastSeen();
     }
 </script>
