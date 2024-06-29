@@ -16,6 +16,22 @@
         h1 {
             text-align: center;
         }
+        .chips {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .chip {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #f1f1f1;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .chip.selected {
+            background-color: #2196F3;
+            color: white;
+        }
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -57,6 +73,10 @@
 
 <div class="container">
     <h1>Daily Registration</h1>
+    <div class="chips">
+        <span class="chip" data-category="L" onclick="filterItems('L')">Louis</span>
+        <span class="chip" data-category="C" onclick="filterItems('C')">Candace</span>
+    </div>
     <div class="grid-container" id="gridContainer">
         <!-- Photos will be loaded here dynamically -->
     </div>
@@ -65,17 +85,37 @@
 <script>
     // Firebase configuration
     const firebaseConfig = {
-        
+        apiKey: "AIzaSyDRsP7g5tzwFSK-gu6IN2DhCYUKGZqxN2A",
+        authDomain: "ganlouisdotcom.firebaseapp.com",
+        databaseURL: "https://ganlouisdotcom-default-rtdb.firebaseio.com",
+        projectId: "ganlouisdotcom",
+        storageBucket: "ganlouisdotcom.appspot.com",
+        messagingSenderId: "26247490244",
+        appId: "1:26247490244:web:4067a84728289e33f9f791",
+        measurementId: "G-RM3WTFFF64"
     };
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    const names = [
-        "Amber", "Ariel", "Baymax", "Beary", "BOGGET", "Bwaly", 
-        "CaptainBarnacles", "Catty", "Chacha", "Cowger", "Doggy", 
-        "Froggy", "George", "Pikachu", "Ri", "Rikete", "Snowy", 
-        "Tapir", "Paddington"
+    const people = [
+        { name: "Amber", category: "C" }, { name: "Anastasia", category: "C" }, { name: "Ariel", category: "L" },
+        { name: "Axolotl", category: "C" }, { name: "Baymax", category: "L" }, { name: "Beary", category: "C" },
+        { name: "Bogget", category: "L" }, { name: "Bwaly", category: "C" }, { name: "Bwally", category: "C" },
+        { name: "Captain Barnacles", category: "C" }, { name: "Catty", category: "L" }, { name: "Chacha", category: "L" },
+        { name: "Cowger", category: "L" }, { name: "Crocodile", category: "C" }, { name: "Doc", category: "C" },
+        { name: "Ducky", category: "C" }, { name: "Duckies", category: "C" }, { name: "Doggy", category: "L" },
+        { name: "Elsa", category: "C" }, { name: "Flamingo", category: "C" }, { name: "Froggy", category: "L" },
+        { name: "George", category: "C" }, { name: "Hello Kitty", category: "C" }, { name: "Hylo", category: "C" },
+        { name: "Koaly", category: "C" }, { name: "Lily", category: "C" }, { name: "Liony", category: "C" },
+        { name: "Lula", category: "C" }, { name: "Miss Pom Pom", category: "C" }, { name: "Paddington", category: "L" },
+        { name: "Pandy", category: "C" }, { name: "Parrot", category: "C" }, { name: "Peggy", category: "C" },
+        { name: "Pikachu", category: "C" }, { name: "PPG", category: "C" }, { name: "Rabbit", category: "C" },
+        { name: "Rainbow Dash", category: "C" }, { name: "Rapunzel", category: "C" }, { name: "Ri", category: "L" },
+        { name: "Rikete", category: "L" }, { name: "Rocket", category: "C" }, { name: "Scratchy", category: "C" },
+        { name: "Snowy", category: "L" }, { name: "Spiderman", category: "C" }, { name: "Tallula", category: "C" },
+        { name: "Tapir", category: "C" }, { name: "Uny", category: "C" }, { name: "Winnie the Pooh", category: "C" },
+        { name: "Yoshi", category: "C" }, { name: "Zebra", category: "L" }
     ];
 
     function formatTimestamp(timestamp) {
@@ -110,45 +150,66 @@
     }
 
     function loadLastSeen() {
-        names.forEach(name => {
-            firebase.database().ref('boggetMIS/' + name).get().then((snapshot) => {
+        people.forEach(person => {
+            firebase.database().ref('boggetMIS/' + person.name).get().then((snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     const lastSeenTimestamp = data.lastSeen;
-                    document.getElementById('lastSeen' + name).innerText = formatTimestamp(lastSeenTimestamp);
+                    document.getElementById('lastSeen' + person.name).innerText = formatTimestamp(lastSeenTimestamp);
                 } else {
-                    document.getElementById('lastSeen' + name).innerText = 'No data';
+                    document.getElementById('lastSeen' + person.name).innerText = 'No data';
                 }
             }).catch((error) => {
-                console.error('Error getting last seen for ' + name, error);
+                console.error('Error getting last seen for ' + person.name, error);
             });
         });
     }
 
     function createGridItems() {
         const gridContainer = document.getElementById('gridContainer');
-        names.forEach(name => {
+        people.forEach(person => {
             const gridItem = document.createElement('div');
             gridItem.className = 'grid-item';
-            gridItem.id = name;
+            gridItem.id = person.name;
+            gridItem.dataset.category = person.category;
             gridItem.onclick = () => {
                 gridItem.classList.toggle('selected');
-                updateTimestamp(name);
+                updateTimestamp(person.name);
             };
 
             const img = document.createElement('img');
-            img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${name}.png`;
-            img.alt = name;
+            img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
+            img.alt = person.name;
 
             const lastSeen = document.createElement('span');
             lastSeen.className = 'last-seen';
-            lastSeen.id = 'lastSeen' + name;
+            lastSeen.id = 'lastSeen' + person.name;
 
             gridItem.appendChild(img);
             gridItem.appendChild(lastSeen);
             gridContainer.appendChild(gridItem);
         });
     }
+
+    function filterItems() {
+        const selectedChips = Array.from(document.querySelectorAll('.chip.selected')).map(chip => chip.dataset.category);
+        const gridItems = document.querySelectorAll('.grid-item');
+
+        gridItems.forEach(item => {
+            if (selectedChips.length === 0 || selectedChips.includes(item.dataset.category)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            chip.classList.toggle('selected');
+            filterItems();
+        });
+    });
 
     window.onload = function() {
         createGridItems();
