@@ -44,6 +44,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: border 0.3s ease;
+            text-align: center;
         }
         .grid-item.selected {
             border-color: blue;
@@ -62,6 +63,11 @@
             padding: 2px 5px;
             border-radius: 3px;
             font-size: 0.8em;
+        }
+        .name {
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
         }
     </style>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
@@ -85,14 +91,7 @@
 <script>
     // Firebase configuration
     const firebaseConfig = {
-        apiKey: "AIzaSyDRsP7g5tzwFSK-gu6IN2DhCYUKGZqxN2A",
-        authDomain: "ganlouisdotcom.firebaseapp.com",
-        databaseURL: "https://ganlouisdotcom-default-rtdb.firebaseio.com",
-        projectId: "ganlouisdotcom",
-        storageBucket: "ganlouisdotcom.appspot.com",
-        messagingSenderId: "26247490244",
-        appId: "1:26247490244:web:4067a84728289e33f9f791",
-        measurementId: "G-RM3WTFFF64"
+        //INSERT FIREBASE CONFIG HERE
     };
 
     // Initialize Firebase
@@ -119,23 +118,25 @@
     ];
 
     function formatTimestamp(timestamp) {
-        const now = new Date();
-        const date = new Date(timestamp * 1000);
-        const diff = now - date;
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+    const now = new Date();
+    const date = new Date(timestamp * 1000);
+    const diff = now - date;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
-        if (seconds < 60) return "just now";
-        if (minutes < 60) return minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
-        if (hours < 24) return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
-        if (days < 2) return "yesterday";
-        if (days < 7) return days + " day" + (days > 1 ? "s" : "") + " ago";
-        
-        const options = { month: 'short', day: 'numeric' };
-        return date.toLocaleDateString(undefined, options);
-    }
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+
+    if (seconds < 60) return "just now";
+    if (minutes < 60) return minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
+    if (hours < 24) return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
+    if (days < 2) return `yesterday at ${date.toLocaleTimeString(undefined, options)}`;
+    if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago at ${date.toLocaleTimeString(undefined, options)}`;
+    
+    const dateOptions = { month: 'short', day: 'numeric' };
+    return `${date.toLocaleDateString(undefined, dateOptions)} at ${date.toLocaleTimeString(undefined, options)}`;
+}
 
     function updateTimestamp(name) {
         const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
@@ -185,7 +186,12 @@
             lastSeen.className = 'last-seen';
             lastSeen.id = 'lastSeen' + person.name;
 
+            const name = document.createElement('span');
+            name.className = 'name';
+            name.innerText = person.name;
+
             gridItem.appendChild(img);
+            gridItem.appendChild(name);
             gridItem.appendChild(lastSeen);
             gridContainer.appendChild(gridItem);
         });
