@@ -21,58 +21,52 @@
         h1 {
             text-align: center;
         }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-        }
-        .grid-item {
-            position: relative;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: border 0.3s ease;
-            text-align: center;
-        }
-        .grid-item.selected {
-            border-color: blue;
-        }
-        .grid-item img {
+        md-list {
             width: 100%;
-            height: auto;
-            display: block;
-        }
-        .last-seen {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 0.8em;
         }
         .name {
-            display: block;
-            margin-top: 5px;
             font-weight: bold;
         }
+        .last-seen {
+            font-size: 0.8em;
+            color: gray;
+        }
+        img[slot="start"] {
+    height: 48px; /* Adjust as needed to fit the list height */
+    width: auto;  /* Maintain aspect ratio */
+}
+        md-list-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        md-list-item.selected {
+            background-color: #f0f0f0;
+        }
+        md-list-item:last-child {
+            border-bottom: none;
+        }
+        md-filter-chip {
+            margin: 0 8px;
+            cursor: pointer;
+        }
     </style>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <script type="importmap">
-    {
-      "imports": {
-        "@material/web/": "https://esm.run/@material/web/"
-      }
-    }
-  </script>
-  <script type="module">
-    import '@material/web/all.js';
-    import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "@material/web/": "https://esm.run/@material/web/"
+            }
+        }
+    </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
 
-    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
-  </script>
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Add Firebase products that you want to use -->
@@ -88,9 +82,9 @@
             <md-filter-chip label="Candace" data-category="C"></md-filter-chip>
         </md-chip-set>
     </div>
-    <div class="grid-container" id="gridContainer">
-        <!-- Photos will be loaded here dynamically -->
-    </div>
+    <md-list id="peopleList">
+        <!-- List items will be loaded here dynamically -->
+    </md-list>
 </div>
 
 <script>
@@ -177,61 +171,48 @@
         });
     }
 
-    function createGridItems() {
-        const gridContainer = document.getElementById('gridContainer');
+    function createListItems() {
+        const listContainer = document.getElementById('peopleList');
         people.forEach(person => {
-            const gridItem = document.createElement('div');
-            gridItem.className = 'grid-item';
-            gridItem.id = person.name;
-            gridItem.dataset.category = person.category;
-            gridItem.onclick = () => {
-                gridItem.classList.toggle('selected');
+            const listItem = document.createElement('md-list-item');
+            listItem.id = person.name;
+            listItem.dataset.category = person.category;
+            listItem.onclick = () => {
+                listItem.classList.toggle('selected');
                 updateTimestamp(person.name);
             };
+
             const img = document.createElement('img');
+            img.slot = 'start';
             img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
-            img.alt = person.name;
-            const lastSeen = document.createElement('span');
-            lastSeen.className = 'last-seen';
-            lastSeen.id = 'lastSeen' + person.name;
+            img.alt = `${person.name}'s avatar`;
 
-            const name = document.createElement('span');
-            name.className = 'name';
-            name.innerText = person.name;
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'name';
+            nameDiv.innerText = person.name;
 
-            gridItem.appendChild(img);
-            gridItem.appendChild(name);
-            gridItem.appendChild(lastSeen);
-            gridContainer.appendChild(gridItem);
+            const lastSeenDiv = document.createElement('div');
+            lastSeenDiv.className = 'last-seen';
+            lastSeenDiv.id = 'lastSeen' + person.name;
+
+            listItem.appendChild(img);
+            listItem.appendChild(nameDiv);
+            listItem.appendChild(lastSeenDiv);
+
+            listContainer.appendChild(listItem);
         });
     }
 
-    function filterItems() {
-        const chips = document.querySelectorAll('md-filter-chip[selected]');
-        const selectedCategories = Array.from(chips).map(chip => chip.getAttribute('data-category'));
-
-        const gridItems = document.querySelectorAll('.grid-item');
-        gridItems.forEach(item => {
-            if (selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    }
-
-    // Call createGridItems and filterItems on document ready or after your people array is populated
-    document.addEventListener('DOMContentLoaded', function() {
-        createGridItems();
-        filterItems(); // Initial filter
+    document.addEventListener('DOMContentLoaded', () => {
+        createListItems();
         loadLastSeen();
+    });
 
-        // Adding event listeners to the chips
-        const chips = document.querySelectorAll('md-filter-chip');
-        chips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                chip.toggleAttribute('selected');
-                filterItems();
+    document.querySelectorAll('md-filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const category = chip.dataset.category;
+            document.querySelectorAll('md-list-item').forEach(item => {
+                item.style.display = item.dataset.category === category ? 'block' : 'none';
             });
         });
     });
