@@ -5,54 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Registration System</title>
     <style>
+        :root {
+            --my-brand-font: 'Open Sans';
+            --my-headline-font: 'Montserrat';
+            --my-title-font: 'Montserrat';
+            --my-plain-font: 'Space Grotesk', sans-serif;
+
+            --md-ref-typeface-brand: var(--my-brand-font);
+            --md-ref-typeface-plain: var(--my-plain-font);
+
+            --md-sys-typescale-headline-font: var(--my-headline-font);
+            --md-sys-typescale-title-font: var(--my-title-font);
+
+            /* New font size variable */
+            --my-plain-font-size: 1.4rem; /* Adjust the size as needed */
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem; /* Enlarged the global font size */
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: auto;
             padding: 20px;
         }
         .chips {
             display: flex;
             justify-content: center;
-            align-items: center; /* Optional, if you want vertical centering */
+            margin-bottom: 20px;
+        }
+        p {
+            font-family: var(--my-plain-font);
+            font-size: var(--my-plain-font-size);
         }
         h1 {
             text-align: center;
+            color: #333;
+            margin-bottom: 30px;
         }
-        md-list {
+        #peopleList {
+            display: grid;
+            grid-template-columns: repeat(var(--columns), 1fr);
+            gap: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #000000; /* Adjusted: Specifies a 1px solid border with a light gray color */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .card.selected {
+            background-color: #e3f2fd;
+        }
+        .img-container {
+            height: var(--img-height);
             width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f000;
+        }
+        .img-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        .card-content {
+            padding: 15px;
         }
         .name {
-            font-weight: bold;
+            font-weight: 500;
+            margin-bottom: 5px;
         }
         .last-seen {
-            font-size: 0.8em;
-            color: gray;
-        }
-        img[slot="start"] {
-    height: 48px; /* Adjust as needed to fit the list height */
-    width: auto;  /* Maintain aspect ratio */
-}
-        md-list-item {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-        }
-        md-list-item.selected {
-            background-color: #f0f0f0;
-        }
-        md-list-item:last-child {
-            border-bottom: none;
+            color: #666;
         }
         md-filter-chip {
-            margin: 0 8px;
-            cursor: pointer;
+            margin: 0 4px;
         }
     </style>
+    
+    
+    
+    
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script type="importmap">
         {
@@ -64,7 +110,6 @@
     <script type="module">
         import '@material/web/all.js';
         import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
-
         document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
     </script>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
@@ -73,9 +118,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-
 <div class="container">
-    <h1>Daily Registration</h1>
     <div class="chips">
         <md-chip-set>
             <md-filter-chip label="Louis" data-category="L"></md-filter-chip>
@@ -86,7 +129,6 @@
         <!-- List items will be loaded here dynamically -->
     </md-list>
 </div>
-
 <script>
     // Firebase configuration
     const firebaseConfig = {
@@ -172,40 +214,89 @@
     }
 
     function createListItems() {
-        const listContainer = document.getElementById('peopleList');
-        people.forEach(person => {
-            const listItem = document.createElement('md-list-item');
-            listItem.id = person.name;
-            listItem.dataset.category = person.category;
-            listItem.onclick = () => {
-                listItem.classList.toggle('selected');
-                updateTimestamp(person.name);
-            };
+    const listContainer = document.getElementById('peopleList');
+    people.forEach(person => {
+        const listItem = document.createElement('md-list-item');
+        listItem.id = person.name;
+        listItem.dataset.category = person.category;
+        listItem.onclick = () => {
+            listItem.classList.toggle('selected');
+            updateTimestamp(person.name);
+        };
 
-            const img = document.createElement('img');
-            img.slot = 'start';
-            img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
-            img.alt = `${person.name}'s avatar`;
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'img-container';
 
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'name';
-            nameDiv.innerText = person.name;
+        const img = document.createElement('img');
+        img.slot = 'start';
+        img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
+        img.alt = `${person.name}'s avatar`;
 
-            const lastSeenDiv = document.createElement('div');
-            lastSeenDiv.className = 'last-seen';
-            lastSeenDiv.id = 'lastSeen' + person.name;
+        imgContainer.appendChild(img);
 
-            listItem.appendChild(img);
-            listItem.appendChild(nameDiv);
-            listItem.appendChild(lastSeenDiv);
+        const infoContainer = document.createElement('div');
+        infoContainer.className = 'info-container';
 
-            listContainer.appendChild(listItem);
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.innerText = person.name;
+
+        const lastSeenDiv = document.createElement('div');
+        lastSeenDiv.className = 'last-seen';
+        lastSeenDiv.id = 'lastSeen' + person.name;
+
+        infoContainer.appendChild(nameDiv);
+        infoContainer.appendChild(lastSeenDiv);
+
+        listItem.appendChild(imgContainer);
+        listItem.appendChild(infoContainer);
+
+        listContainer.appendChild(listItem);
+    });
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    loadLastSeen();
+    adjustLayout();
+    window.addEventListener('resize', adjustLayout);
+
+    const filterChips = document.querySelectorAll('md-filter-chip');
+    const listItems = document.querySelectorAll('md-list-item');
+    
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            chip.classList.toggle('selected');
+            const selectedCategories = Array.from(filterChips)
+                .filter(chip => chip.classList.contains('selected'))
+                .map(chip => chip.dataset.category);
+
+            listItems.forEach(item => {
+                item.style.display = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)
+                    ? 'flex'
+                    : 'none';
+            });
         });
+    });
+});
+
+function adjustLayout() {
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const imgHeightRatio = 0.15; // 15% of viewport height
+        const imgHeight = vh * imgHeightRatio;
+        const columns = window.innerWidth >= 1200 ? 4 : (window.innerWidth >= 768 ? 3 : (window.innerWidth >= 500 ? 2 : 1));
+
+        document.documentElement.style.setProperty('--img-height', `${imgHeight}px`);
+        document.documentElement.style.setProperty('--columns', columns);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         createListItems();
         loadLastSeen();
+        adjustLayout();
+        window.addEventListener('resize', adjustLayout);
     });
 
     document.querySelectorAll('md-filter-chip').forEach(chip => {
@@ -217,6 +308,5 @@
         });
     });
 </script>
-
 </body>
 </html>
