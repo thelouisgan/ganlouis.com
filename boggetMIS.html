@@ -13,24 +13,13 @@
             margin: auto;
             padding: 20px;
         }
+        .chips {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Optional, if you want vertical centering */
+        }
         h1 {
             text-align: center;
-        }
-        .chips {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .chip {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: #f1f1f1;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-        .chip.selected {
-            background-color: #2196F3;
-            color: white;
         }
         .grid-container {
             display: grid;
@@ -70,6 +59,20 @@
             font-weight: bold;
         }
     </style>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "@material/web/": "https://esm.run/@material/web/"
+      }
+    }
+  </script>
+  <script type="module">
+    import '@material/web/all.js';
+    import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+  </script>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Add Firebase products that you want to use -->
@@ -80,8 +83,10 @@
 <div class="container">
     <h1>Daily Registration</h1>
     <div class="chips">
-        <span class="chip" data-category="L" onclick="filterItems('L')">Louis</span>
-        <span class="chip" data-category="C" onclick="filterItems('C')">Candace</span>
+        <md-chip-set>
+            <md-filter-chip label="Louis" data-category="L"></md-filter-chip>
+            <md-filter-chip label="Candace" data-category="C"></md-filter-chip>
+        </md-chip-set>
     </div>
     <div class="grid-container" id="gridContainer">
         <!-- Photos will be loaded here dynamically -->
@@ -91,7 +96,14 @@
 <script>
     // Firebase configuration
     const firebaseConfig = {
-        //INSERT FIREBASE CONFIG HERE
+        apiKey: "AIzaSyDRsP7g5tzwFSK-gu6IN2DhCYUKGZqxN2A",
+        authDomain: "ganlouisdotcom.firebaseapp.com",
+        databaseURL: "https://ganlouisdotcom-default-rtdb.firebaseio.com",
+        projectId: "ganlouisdotcom",
+        storageBucket: "ganlouisdotcom.appspot.com",
+        messagingSenderId: "26247490244",
+        appId: "1:26247490244:web:4067a84728289e33f9f791",
+        measurementId: "G-RM3WTFFF64"
     };
 
     // Initialize Firebase
@@ -118,25 +130,24 @@
     ];
 
     function formatTimestamp(timestamp) {
-    const now = new Date();
-    const date = new Date(timestamp * 1000);
-    const diff = now - date;
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+        const now = new Date();
+        const date = new Date(timestamp * 1000);
+        const diff = now - date;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
 
-    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+        const options = { hour: 'numeric', minute: 'numeric', hour12: true };
 
-    if (seconds < 60) return "just now";
-    if (minutes < 60) return minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
-    if (hours < 24) return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
-    if (days < 2) return `yesterday at ${date.toLocaleTimeString(undefined, options)}`;
-    if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago at ${date.toLocaleTimeString(undefined, options)}`;
-    
-    const dateOptions = { month: 'short', day: 'numeric' };
-    return `${date.toLocaleDateString(undefined, dateOptions)} at ${date.toLocaleTimeString(undefined, options)}`;
-}
+        if (seconds < 60) return "just now";
+        if (hours < 24) return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
+        if (days < 2) return `yesterday at ${date.toLocaleTimeString(undefined, options)}`;
+        if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago at ${date.toLocaleTimeString(undefined, options)}`;
+
+        const dateOptions = { month: 'short', day: 'numeric' };
+        return `${date.toLocaleDateString(undefined, dateOptions)} at ${date.toLocaleTimeString(undefined, options)}`;
+    }
 
     function updateTimestamp(name) {
         const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
@@ -158,10 +169,10 @@
                     const lastSeenTimestamp = data.lastSeen;
                     document.getElementById('lastSeen' + person.name).innerText = formatTimestamp(lastSeenTimestamp);
                 } else {
-                    document.getElementById('lastSeen' + person.name).innerText = 'No data';
+                    document.getElementById('lastSeen' + person.name).innerText = "Never seen";
                 }
             }).catch((error) => {
-                console.error('Error getting last seen for ' + person.name, error);
+                console.error('Error loading last seen for ' + person.name, error);
             });
         });
     }
@@ -177,11 +188,9 @@
                 gridItem.classList.toggle('selected');
                 updateTimestamp(person.name);
             };
-
             const img = document.createElement('img');
             img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
             img.alt = person.name;
-
             const lastSeen = document.createElement('span');
             lastSeen.className = 'last-seen';
             lastSeen.id = 'lastSeen' + person.name;
@@ -198,11 +207,12 @@
     }
 
     function filterItems() {
-        const selectedChips = Array.from(document.querySelectorAll('.chip.selected')).map(chip => chip.dataset.category);
-        const gridItems = document.querySelectorAll('.grid-item');
+        const chips = document.querySelectorAll('md-filter-chip[selected]');
+        const selectedCategories = Array.from(chips).map(chip => chip.getAttribute('data-category'));
 
+        const gridItems = document.querySelectorAll('.grid-item');
         gridItems.forEach(item => {
-            if (selectedChips.length === 0 || selectedChips.includes(item.dataset.category)) {
+            if (selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)) {
                 item.style.display = 'block';
             } else {
                 item.style.display = 'none';
@@ -210,17 +220,21 @@
         });
     }
 
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            chip.classList.toggle('selected');
-            filterItems();
+    // Call createGridItems and filterItems on document ready or after your people array is populated
+    document.addEventListener('DOMContentLoaded', function() {
+        createGridItems();
+        filterItems(); // Initial filter
+        loadLastSeen();
+
+        // Adding event listeners to the chips
+        const chips = document.querySelectorAll('md-filter-chip');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.toggleAttribute('selected');
+                filterItems();
+            });
         });
     });
-
-    window.onload = function() {
-        createGridItems();
-        loadLastSeen();
-    }
 </script>
 
 </body>
