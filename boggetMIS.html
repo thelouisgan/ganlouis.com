@@ -16,27 +16,36 @@
 
             --md-sys-typescale-headline-font: var(--my-headline-font);
             --md-sys-typescale-title-font: var(--my-title-font);
-
-            /* New font size variable */
-            --my-plain-font-size: 1.4rem; /* Adjust the size as needed */
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Space Grotesk', sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
             margin: 0;
             padding: 0;
-            font-size: 1.2rem; /* Enlarged the global font size */
+            font-size: 1.2rem;
         }
         .container {
             max-width: 1200px;
             margin: auto;
             padding: 20px;
         }
+        md-filter-chip {
+            --md-filter-chip-label-text-size: 1rem;
+            --md-filter-chip-container-height: 40px;
+            padding: 0 2px;
+            margin: 0 8px;
+        }
+
         .chips {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 13px;
         }
         p {
             font-family: var(--my-plain-font);
@@ -53,28 +62,47 @@
             gap: 20px;
         }
         .card {
-            background-color: white;
+            background-color: rgb(255, 255, 255);
             border-radius: 8px;
-            border: 1px solid #000000; /* Adjusted: Specifies a 1px solid border with a light gray color */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #000000; /* Changed: Added a 1px solid black border */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-
         }
+
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        .card.selected {
-            background-color: #e3f2fd;
+
+        .card:hover .name,
+        .card:hover .last-seen {
+            font-weight: 700;
+            transition: font-weight 0.2s ease;
         }
+
+        .name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            transition: font-weight 0.2s ease;
+        }
+
+        .last-seen {
+            color: #666;
+            transition: font-weight 0.2s ease;
+        }
+
+        .card.selected {
+            background-color: transparent; /* Changed: Removed background color for selected state */
+        }
+
         .img-container {
             height: var(--img-height);
-            width: 100%;
+            width: 90%;
             display: flex;
             justify-content: center;
-            align-items: center;
-            background-color: #f0f0f000;
+            align-items: flex-start;
+            padding: 15px
         }
         .img-container img {
             max-height: 100%;
@@ -94,12 +122,19 @@
         md-filter-chip {
             margin: 0 4px;
         }
+        md-list {
+        --md-list-container-color: none;
+        }
     </style>
     
     
     
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
     <script type="importmap">
         {
             "imports": {
@@ -216,11 +251,12 @@
     function createListItems() {
     const listContainer = document.getElementById('peopleList');
     people.forEach(person => {
-        const listItem = document.createElement('md-list-item');
-        listItem.id = person.name;
-        listItem.dataset.category = person.category;
-        listItem.onclick = () => {
-            listItem.classList.toggle('selected');
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.id = person.name;
+        card.dataset.category = person.category;
+        card.onclick = () => {
+            card.classList.toggle('selected');
             updateTimestamp(person.name);
         };
 
@@ -228,14 +264,13 @@
         imgContainer.className = 'img-container';
 
         const img = document.createElement('img');
-        img.slot = 'start';
         img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
         img.alt = `${person.name}'s avatar`;
 
         imgContainer.appendChild(img);
 
-        const infoContainer = document.createElement('div');
-        infoContainer.className = 'info-container';
+        const cardContent = document.createElement('div');
+        cardContent.className = 'card-content';
 
         const nameDiv = document.createElement('div');
         nameDiv.className = 'name';
@@ -245,13 +280,13 @@
         lastSeenDiv.className = 'last-seen';
         lastSeenDiv.id = 'lastSeen' + person.name;
 
-        infoContainer.appendChild(nameDiv);
-        infoContainer.appendChild(lastSeenDiv);
+        cardContent.appendChild(nameDiv);
+        cardContent.appendChild(lastSeenDiv);
 
-        listItem.appendChild(imgContainer);
-        listItem.appendChild(infoContainer);
+        card.appendChild(imgContainer);
+        card.appendChild(cardContent);
 
-        listContainer.appendChild(listItem);
+        listContainer.appendChild(card);
     });
 }
 
@@ -282,6 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const fontLoader = new FontFace('Space Grotesk', 'url(https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap) format("woff2")', {
+        weight: '700'
+    });
+
+    fontLoader.load().then((font) => {
+        document.fonts.add(font);
+    });
+});
+
 function adjustLayout() {
         const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
         const imgHeightRatio = 0.15; // 15% of viewport height
@@ -306,9 +351,9 @@ function adjustLayout() {
             .filter(chip => chip.selected)
             .map(chip => chip.dataset.category);
 
-        listItems.forEach(item => {
-            item.style.display = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)
-                ? 'flex'
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.display = selectedCategories.length === 0 || selectedCategories.includes(card.dataset.category)
+                ? 'block'
                 : 'none';
         });
     }
