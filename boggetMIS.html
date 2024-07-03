@@ -5,94 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Registration System</title>
     <style>
+        :root {
+            --my-brand-font: 'Open Sans';
+            --my-headline-font: 'Montserrat';
+            --my-title-font: 'Montserrat';
+            --my-plain-font: 'Space Grotesk', sans-serif;
+
+            --md-ref-typeface-brand: var(--my-brand-font);
+            --md-ref-typeface-plain: var(--my-plain-font);
+
+            --md-sys-typescale-headline-font: var(--my-headline-font);
+            --md-sys-typescale-title-font: var(--my-title-font);
+
+            /* New font size variable */
+            --my-plain-font-size: 1.4rem; /* Adjust the size as needed */
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem; /* Enlarged the global font size */
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: auto;
             padding: 20px;
         }
         .chips {
             display: flex;
             justify-content: center;
-            align-items: center; /* Optional, if you want vertical centering */
+            margin-bottom: 20px;
+        }
+        p {
+            font-family: var(--my-plain-font);
+            font-size: var(--my-plain-font-size);
         }
         h1 {
             text-align: center;
+            color: #333;
+            margin-bottom: 30px;
         }
-        .grid-container {
+        #peopleList {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(var(--columns), 1fr);
+            gap: 20px;
         }
-        .grid-item {
-            position: relative;
-            border: 2px solid transparent;
-            border-radius: 10px;
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #000000; /* Adjusted: Specifies a 1px solid border with a light gray color */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             overflow: hidden;
-            cursor: pointer;
-            transition: border 0.3s ease;
-            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
         }
-        .grid-item.selected {
-            border-color: blue;
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        .grid-item img {
+        .card.selected {
+            background-color: #e3f2fd;
+        }
+        .img-container {
+            height: var(--img-height);
             width: 100%;
-            height: auto;
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f000;
         }
-        .last-seen {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 0.8em;
+        .img-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        .card-content {
+            padding: 15px;
         }
         .name {
-            display: block;
-            margin-top: 5px;
-            font-weight: bold;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .last-seen {
+            color: #666;
+        }
+        md-filter-chip {
+            margin: 0 4px;
         }
     </style>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <script type="importmap">
-    {
-      "imports": {
-        "@material/web/": "https://esm.run/@material/web/"
-      }
-    }
-  </script>
-  <script type="module">
-    import '@material/web/all.js';
-    import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
-
-    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
-  </script>
+    
+    
+    
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "@material/web/": "https://esm.run/@material/web/"
+            }
+        }
+    </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-
 <div class="container">
-    <h1>Daily Registration</h1>
     <div class="chips">
         <md-chip-set>
             <md-filter-chip label="Louis" data-category="L"></md-filter-chip>
             <md-filter-chip label="Candace" data-category="C"></md-filter-chip>
         </md-chip-set>
     </div>
-    <div class="grid-container" id="gridContainer">
-        <!-- Photos will be loaded here dynamically -->
-    </div>
+    <md-list id="peopleList">
+        <!-- List items will be loaded here dynamically -->
+    </md-list>
 </div>
-
 <script>
     // Firebase configuration
     const firebaseConfig = {
@@ -177,65 +213,134 @@
         });
     }
 
-    function createGridItems() {
-        const gridContainer = document.getElementById('gridContainer');
-        people.forEach(person => {
-            const gridItem = document.createElement('div');
-            gridItem.className = 'grid-item';
-            gridItem.id = person.name;
-            gridItem.dataset.category = person.category;
-            gridItem.onclick = () => {
-                gridItem.classList.toggle('selected');
-                updateTimestamp(person.name);
-            };
-            const img = document.createElement('img');
-            img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
-            img.alt = person.name;
-            const lastSeen = document.createElement('span');
-            lastSeen.className = 'last-seen';
-            lastSeen.id = 'lastSeen' + person.name;
+    function createListItems() {
+    const listContainer = document.getElementById('peopleList');
+    people.forEach(person => {
+        const listItem = document.createElement('md-list-item');
+        listItem.id = person.name;
+        listItem.dataset.category = person.category;
+        listItem.onclick = () => {
+            listItem.classList.toggle('selected');
+            updateTimestamp(person.name);
+        };
 
-            const name = document.createElement('span');
-            name.className = 'name';
-            name.innerText = person.name;
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'img-container';
 
-            gridItem.appendChild(img);
-            gridItem.appendChild(name);
-            gridItem.appendChild(lastSeen);
-            gridContainer.appendChild(gridItem);
-        });
-    }
+        const img = document.createElement('img');
+        img.slot = 'start';
+        img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
+        img.alt = `${person.name}'s avatar`;
 
-    function filterItems() {
-        const chips = document.querySelectorAll('md-filter-chip[selected]');
-        const selectedCategories = Array.from(chips).map(chip => chip.getAttribute('data-category'));
+        imgContainer.appendChild(img);
 
-        const gridItems = document.querySelectorAll('.grid-item');
-        gridItems.forEach(item => {
-            if (selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    }
+        const infoContainer = document.createElement('div');
+        infoContainer.className = 'info-container';
 
-    // Call createGridItems and filterItems on document ready or after your people array is populated
-    document.addEventListener('DOMContentLoaded', function() {
-        createGridItems();
-        filterItems(); // Initial filter
-        loadLastSeen();
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.innerText = person.name;
 
-        // Adding event listeners to the chips
-        const chips = document.querySelectorAll('md-filter-chip');
-        chips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                chip.toggleAttribute('selected');
-                filterItems();
+        const lastSeenDiv = document.createElement('div');
+        lastSeenDiv.className = 'last-seen';
+        lastSeenDiv.id = 'lastSeen' + person.name;
+
+        infoContainer.appendChild(nameDiv);
+        infoContainer.appendChild(lastSeenDiv);
+
+        listItem.appendChild(imgContainer);
+        listItem.appendChild(infoContainer);
+
+        listContainer.appendChild(listItem);
+    });
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    loadLastSeen();
+    adjustLayout();
+    window.addEventListener('resize', adjustLayout);
+
+    const filterChips = document.querySelectorAll('md-filter-chip');
+    const listItems = document.querySelectorAll('md-list-item');
+    
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            chip.classList.toggle('selected');
+            const selectedCategories = Array.from(filterChips)
+                .filter(chip => chip.classList.contains('selected'))
+                .map(chip => chip.dataset.category);
+
+            listItems.forEach(item => {
+                item.style.display = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)
+                    ? 'flex'
+                    : 'none';
             });
         });
     });
-</script>
+});
 
+function adjustLayout() {
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const imgHeightRatio = 0.15; // 15% of viewport height
+        const imgHeight = vh * imgHeightRatio;
+        const columns = window.innerWidth >= 1200 ? 4 : (window.innerWidth >= 768 ? 3 : (window.innerWidth >= 500 ? 2 : 1));
+
+        document.documentElement.style.setProperty('--img-height', `${imgHeight}px`);
+        document.documentElement.style.setProperty('--columns', columns);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        createListItems();
+        loadLastSeen();
+        adjustLayout();
+        window.addEventListener('resize', adjustLayout);
+
+        const filterChips = document.querySelectorAll('md-filter-chip');
+    const listItems = document.querySelectorAll('md-list-item');
+    
+    function updateFilter() {
+        const selectedCategories = Array.from(filterChips)
+            .filter(chip => chip.selected)
+            .map(chip => chip.dataset.category);
+
+        listItems.forEach(item => {
+            item.style.display = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)
+                ? 'flex'
+                : 'none';
+        });
+    }
+
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            updateFilter();
+        });
+    });
+
+    // Initial filter update
+    updateFilter();
+});
+
+    document.querySelectorAll('md-filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        chip.classList.toggle('selected');
+        
+        const selectedCategories = Array.from(document.querySelectorAll('md-filter-chip'))
+            .filter(chip => chip.classList.contains('selected'))
+            .map(chip => chip.dataset.category);
+        
+        document.querySelectorAll('md-list-item').forEach(item => {
+            item.style.display = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category)
+                ? 'flex'
+                : 'none';
+        });
+    });
+});
+
+
+
+</script>
 </body>
 </html>
