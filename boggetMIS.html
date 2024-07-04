@@ -28,9 +28,10 @@
             font-size: 1.2rem;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1920px;
             margin: auto;
             padding: 20px;
+            margin-top: 50px;
         }
         md-filter-chip {
             --md-filter-chip-label-text-size: 1rem;
@@ -185,6 +186,45 @@
             color: white;
         }
 
+        .ticker-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 10px 0;
+            overflow: hidden;
+            z-index: 1000;
+            border-bottom: #000000 1px solid;
+        }
+
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 10s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            border: 1px solid #000000;
+            margin: 0 5px;
+            border-radius: 4px;
+            padding: 0 5px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+            100% {
+                transform: translate3d(-100%, 0, 0);
+            }
+        }
+
         md-filter-chip {
             margin: 0 4px;
         }
@@ -218,258 +258,312 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-<div id="alertBanner" class="alert-banner">Registration alert sent</div>
-<div class="container">
-    <div class="chips">
-        <md-chip-set>
-            <md-filter-chip label="Louis" data-category="L"></md-filter-chip>
-            <md-filter-chip label="Candace" data-category="C"></md-filter-chip>
-        </md-chip-set>
+
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker">
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+            <div class="ticker-item"></div>
+        </div>
     </div>
-    <md-list id="peopleList">
-        <!-- List items will be loaded here dynamically -->
-    </md-list>
-</div>
-<script>
-    // Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyDRsP7g5tzwFSK-gu6IN2DhCYUKGZqxN2A",
-        authDomain: "ganlouisdotcom.firebaseapp.com",
-        databaseURL: "https://ganlouisdotcom-default-rtdb.firebaseio.com",
-        projectId: "ganlouisdotcom",
-        storageBucket: "ganlouisdotcom.appspot.com",
-        messagingSenderId: "26247490244",
-        appId: "1:26247490244:web:4067a84728289e33f9f791",
-        measurementId: "G-RM3WTFFF64"
-    };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    <div id="alertBanner" class="alert-banner">Registration alert sent</div>
+    <div class="container">
+        <div class="chips">
+            <md-chip-set>
+                <md-filter-chip label="Louis" data-category="L"></md-filter-chip>
+                <md-filter-chip label="Candace" data-category="C"></md-filter-chip>
+            </md-chip-set>
+        </div>
+        <md-list id="peopleList">
+            <!-- List items will be loaded here dynamically -->
+        </md-list>
+    </div>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDRsP7g5tzwFSK-gu6IN2DhCYUKGZqxN2A",
+            authDomain: "ganlouisdotcom.firebaseapp.com",
+            databaseURL: "https://ganlouisdotcom-default-rtdb.firebaseio.com",
+            projectId: "ganlouisdotcom",
+            storageBucket: "ganlouisdotcom.appspot.com",
+            messagingSenderId: "26247490244",
+            appId: "1:26247490244:web:4067a84728289e33f9f791",
+            measurementId: "G-RM3WTFFF64"
+        };
 
-    const people = [
-        { name: "Amber", category: "C" }, { name: "Anastasia", category: "C" }, { name: "Ariel", category: "L" },
-        { name: "Axolotl", category: "C" }, { name: "Baymax", category: "L" }, { name: "Beary", category: "C" },
-        { name: "Bogget", category: "L" }, { name: "Bwaly", category: "C" }, { name: "Bwally", category: "C" },
-        { name: "Captain Barnacles", category: "C" }, { name: "Catty", category: "L" }, { name: "Chacha", category: "L" },
-        { name: "Cowger", category: "L" }, { name: "Crocodile", category: "C" }, { name: "Doc", category: "C" },
-        { name: "Ducky", category: "C" }, { name: "Duckies", category: "C" }, { name: "Doggy", category: "L" },
-        { name: "Elsa", category: "C" }, { name: "Flamingo", category: "C" }, { name: "Froggy", category: "L" },
-        { name: "George", category: "C" }, { name: "Hello Kitty", category: "C" }, { name: "Hylo", category: "C" },
-        { name: "Koaly", category: "C" }, { name: "Lily", category: "C" }, { name: "Liony", category: "C" },
-        { name: "Lula", category: "C" }, { name: "Miss Pom Pom", category: "C" }, { name: "Paddington", category: "L" },
-        { name: "Pandy", category: "C" }, { name: "Parrot", category: "C" }, { name: "Peggy", category: "C" },
-        { name: "Pikachu", category: "C" }, { name: "PPG", category: "C" }, { name: "Rabbit", category: "C" },
-        { name: "Rainbow Dash", category: "C" }, { name: "Rapunzel", category: "C" }, { name: "Ri", category: "L" },
-        { name: "Rikete", category: "L" }, { name: "Rocket", category: "C" }, { name: "Scratchy", category: "C" },
-        { name: "Snowy", category: "L" }, { name: "Spiderman", category: "C" }, { name: "Tallula", category: "C" },
-        { name: "Tapir", category: "C" }, { name: "Uny", category: "C" }, { name: "Winnie the Pooh", category: "C" },
-        { name: "Yoshi", category: "C" }, { name: "Zebra", category: "L" }
-    ];
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
 
-    function formatTimestamp(timestamp) {
-        const now = new Date();
-        const date = new Date(timestamp * 1000);
-        const diff = now - date;
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+        const people = [
+            { name: "Amber", category: "C" }, { name: "Anastasia", category: "C" }, { name: "Ariel", category: "L" },
+            { name: "Axolotl", category: "C" }, { name: "Baymax", category: "L" }, { name: "Beary", category: "C" },
+            { name: "Bogget", category: "L" }, { name: "Bwaly", category: "C" }, { name: "Bwally", category: "C" },
+            { name: "Captain Barnacles", category: "C" }, { name: "Catty", category: "L" }, { name: "Chacha", category: "L" },
+            { name: "Cowger", category: "L" }, { name: "Crocodile", category: "C" }, { name: "Doc", category: "C" },
+            { name: "Ducky", category: "C" }, { name: "Duckies", category: "C" }, { name: "Doggy", category: "L" },
+            { name: "Elsa", category: "C" }, { name: "Flamingo", category: "C" }, { name: "Froggy", category: "L" },
+            { name: "George", category: "C" }, { name: "Hello Kitty", category: "C" }, { name: "Hylo", category: "C" },
+            { name: "Koaly", category: "C" }, { name: "Lily", category: "C" }, { name: "Liony", category: "C" },
+            { name: "Lula", category: "C" }, { name: "Miss Pom Pom", category: "C" }, { name: "Paddington", category: "L" },
+            { name: "Pandy", category: "C" }, { name: "Parrot", category: "C" }, { name: "Peggy", category: "C" },
+            { name: "Pikachu", category: "C" }, { name: "PPG", category: "C" }, { name: "Rabbit", category: "C" },
+            { name: "Rainbow Dash", category: "C" }, { name: "Rapunzel", category: "C" }, { name: "Ri", category: "L" },
+            { name: "Rikete", category: "L" }, { name: "Rocket", category: "C" }, { name: "Scratchy", category: "C" },
+            { name: "Snowy", category: "L" }, { name: "Spiderman", category: "C" }, { name: "Tallula", category: "C" },
+            { name: "Tapir", category: "C" }, { name: "Uny", category: "C" }, { name: "Winnie the Pooh", category: "C" },
+            { name: "Yoshi", category: "C" }, { name: "Zebra", category: "L" }
+        ];
 
-        const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+        function formatTimestamp(timestamp) {
+            const now = new Date();
+            const date = new Date(timestamp * 1000);
+            const diff = now - date;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
 
-        if (isNaN(date.getTime())) return "never seen";
-        if (seconds < 1) return "last seen just now";
-        if (seconds < 60) return "last seen " + seconds + " second" + (seconds > 1 ? "s" : "") + " ago";
-        if (hours < 1) return "last seen " + minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
-        if (hours < 24) return "last seen " + hours + " hour" + (hours > 1 ? "s" : "") + " ago";
-        if (days < 2) return `last seen ${hours} hour${hours > 1 ? "s" : ""} yesterday at ${date.toLocaleTimeString(undefined, options)}`;
-        if (days < 7) return `last seen ${days} day${days > 1 ? "s" : ""} ago at ${date.toLocaleTimeString(undefined, options)}`;
+            const options = { hour: 'numeric', minute: 'numeric', hour12: true };
 
-        const dateOptions = { month: 'short', day: 'numeric' };
-        return `${date.toLocaleDateString(undefined, dateOptions)} at ${date.toLocaleTimeString(undefined, options)}`;
-    }
+            if (isNaN(date.getTime())) return "never seen";
+            if (seconds < 1) return "last seen just now";
+            if (seconds < 60) return "last seen " + seconds + " second" + (seconds > 1 ? "s" : "") + " ago";
+            if (hours < 1) return "last seen " + minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
+            if (hours < 24) return "last seen " + hours + " hour" + (hours > 1 ? "s" : "") + " ago";
+            if (days < 2) return `last seen yesterday at ${date.toLocaleTimeString(undefined, options)}`;
+            if (days < 7) return `last seen ${days} day${days > 1 ? "s" : ""} ago at ${date.toLocaleTimeString(undefined, options)}`;
 
-    function updateTimestamp(name) {
-        const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
-        firebase.database().ref('boggetMIS/' + name).set({
-            lastSeen: timestamp
-        }).then(() => {
-            console.log(name + ' last seen updated to ' + timestamp);
-            document.getElementById('lastSeen' + name).innerText = formatTimestamp(timestamp);
-        }).catch((error) => {
-            console.error('Error updating last seen for ' + name, error);
-        });
-    }
-
-    function loadLastSeen() {
-        people.forEach(person => {
-            firebase.database().ref('boggetMIS/' + person.name).get().then((snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const lastSeenTimestamp = data.lastSeen;
-                    document.getElementById('lastSeen' + person.name).innerText = formatTimestamp(lastSeenTimestamp);
-                } else {
-                    document.getElementById('lastSeen' + person.name).innerText = "Never seen";
-                }
-            }).catch((error) => {
-                console.error('Error loading last seen for ' + person.name, error);
-            });
-        });
-    }
-
-    function createListItems() {
-        const listContainer = document.getElementById('peopleList');
-        people.forEach(person => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.id = person.name;
-            card.dataset.category = person.category;
-            card.onclick = () => {
-                card.classList.toggle('selected');
-                updateTimestamp(person.name);
-            };
-
-            const imgContainer = document.createElement('div');
-            imgContainer.className = 'img-container';
-
-            const img = document.createElement('img');
-            img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
-            img.alt = `${person.name}'s avatar`;
-
-            imgContainer.appendChild(img);
-
-            const cardContent = document.createElement('div');
-            cardContent.className = 'card-content';
-
-            const nameButtonContainer = document.createElement('div');
-            nameButtonContainer.className = 'name-button-container';
-
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'name';
-            nameDiv.innerText = person.name;
-
-            const alertButton = document.createElement('button');
-            alertButton.className = 'alert-button';
-            alertButton.textContent = 'ALERT';
-            alertButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleAlert(person.name, card, alertButton);
-            });
-
-            nameButtonContainer.appendChild(nameDiv);
-            nameButtonContainer.appendChild(alertButton);
-
-            const lastSeenDiv = document.createElement('div');
-            lastSeenDiv.className = 'last-seen';
-            lastSeenDiv.id = 'lastSeen' + person.name;
-
-            cardContent.appendChild(nameButtonContainer);
-            cardContent.appendChild(lastSeenDiv);
-
-            card.appendChild(imgContainer);
-            card.appendChild(cardContent);
-
-            listContainer.appendChild(card);
-        });
-    }
-
-    function toggleAlert(name, card, button) {
-        const alertRef = firebase.database().ref(`boggetMIS/${name}/alertstats`);
-        alertRef.get().then((snapshot) => {
-            const currentState = snapshot.val() || false;
-            const newState = !currentState;
-            alertRef.set(newState).then(() => {
-                updateAlertUI(card, button, newState);
-            }).catch((error) => {
-                console.error('Error updating alert state:', error);
-            });
-        }).catch((error) => {
-            console.error('Error reading alert state:', error);
-        });
-    }
-
-    function updateAlertUI(card, button, isAlerted) {
-        if (isAlerted) {
-            card.classList.add('alerted');
-            button.textContent = 'OFF';
-        } else {
-            card.classList.remove('alerted');
-            button.textContent = 'ALERT';
+            const dateOptions = { month: 'short', day: 'numeric' };
+            return `${date.toLocaleDateString(undefined, dateOptions)} at ${date.toLocaleTimeString(undefined, options)}`;
         }
-    }
 
-    function loadAlertStates() {
-        people.forEach(person => {
-            const alertRef = firebase.database().ref(`boggetMIS/${person.name}/alertstats`);
-            alertRef.get().then((snapshot) => {
-                const isAlerted = snapshot.val() || false;
-                const card = document.getElementById(person.name);
-                const button = card.querySelector('.alert-button');
-                updateAlertUI(card, button, isAlerted);
+        function updateTimestamp(name) {
+            const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+            firebase.database().ref('boggetMIS/' + name).set({
+                lastSeen: timestamp
+            }).then(() => {
+                console.log(name + ' last seen updated to ' + timestamp);
+                document.getElementById('lastSeen' + name).innerText = formatTimestamp(timestamp);
             }).catch((error) => {
-                console.error('Error loading alert state for ' + person.name, error);
+                console.error('Error updating last seen for ' + name, error);
+            });
+        }
+
+        function loadLastSeen() {
+            people.forEach(person => {
+                firebase.database().ref('boggetMIS/' + person.name).get().then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        const lastSeenTimestamp = data.lastSeen;
+                        document.getElementById('lastSeen' + person.name).innerText = formatTimestamp(lastSeenTimestamp);
+                    } else {
+                        document.getElementById('lastSeen' + person.name).innerText = "Never seen";
+                    }
+                }).catch((error) => {
+                    console.error('Error loading last seen for ' + person.name, error);
+                });
+            });
+        }
+
+        function createListItems() {
+            const listContainer = document.getElementById('peopleList');
+            people.forEach(person => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = person.name;
+                card.dataset.category = person.category;
+                card.onclick = () => {
+                    card.classList.toggle('selected');
+                    updateTimestamp(person.name);
+                };
+
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'img-container';
+
+                const img = document.createElement('img');
+                img.src = `https://ganlouis.com/wp-content/uploads/2024/06/${person.name.replace(/\s+/g, '-')}.png`;
+                img.alt = `${person.name}'s avatar`;
+
+                imgContainer.appendChild(img);
+
+                const cardContent = document.createElement('div');
+                cardContent.className = 'card-content';
+
+                const nameButtonContainer = document.createElement('div');
+                nameButtonContainer.className = 'name-button-container';
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'name';
+                nameDiv.innerText = person.name;
+
+                const alertButton = document.createElement('button');
+                alertButton.className = 'alert-button';
+                alertButton.textContent = 'ALERT';
+                alertButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleAlert(person.name, card, alertButton);
+                });
+
+                nameButtonContainer.appendChild(nameDiv);
+                nameButtonContainer.appendChild(alertButton);
+
+                const lastSeenDiv = document.createElement('div');
+                lastSeenDiv.className = 'last-seen';
+                lastSeenDiv.id = 'lastSeen' + person.name;
+
+                cardContent.appendChild(nameButtonContainer);
+                cardContent.appendChild(lastSeenDiv);
+
+                card.appendChild(imgContainer);
+                card.appendChild(cardContent);
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        function toggleAlert(name, card, button) {
+            const alertRef = firebase.database().ref(`boggetMIS/${name}/alertstats`);
+            alertRef.get().then((snapshot) => {
+                const currentState = snapshot.val() || false;
+                const newState = !currentState;
+                alertRef.set(newState).then(() => {
+                    updateAlertUI(card, button, newState);
+                }).catch((error) => {
+                    console.error('Error updating alert state:', error);
+                });
+            }).catch((error) => {
+                console.error('Error reading alert state:', error);
+            });
+        }
+
+        function updateAlertUI(card, button, isAlerted) {
+            if (isAlerted) {
+                card.classList.add('alerted');
+                button.textContent = 'OFF';
+            } else {
+                card.classList.remove('alerted');
+                button.textContent = 'ALERT';
+            }
+        }
+
+        function loadAlertStates() {
+            people.forEach(person => {
+                const alertRef = firebase.database().ref(`boggetMIS/${person.name}/alertstats`);
+                alertRef.get().then((snapshot) => {
+                    const isAlerted = snapshot.val() || false;
+                    const card = document.getElementById(person.name);
+                    const button = card.querySelector('.alert-button');
+                    updateAlertUI(card, button, isAlerted);
+                }).catch((error) => {
+                    console.error('Error loading alert state for ' + person.name, error);
+                });
+            });
+        }
+
+        function updateTicker() {
+            const tickerItems = document.querySelectorAll('.ticker-item');
+            const recentUpdates = [];
+
+            people.forEach(person => {
+                firebase.database().ref('boggetMIS/' + person.name).get().then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        const lastSeenTimestamp = data.lastSeen;
+                        recentUpdates.push({
+                            name: person.name,
+                            lastSeen: lastSeenTimestamp
+                        });
+
+                        if (recentUpdates.length === people.length) {
+                            // Sort updates by most recent
+                            recentUpdates.sort((a, b) => b.lastSeen - a.lastSeen);
+
+                            // Take top 10
+                            const top10 = recentUpdates.slice(0, 10);
+
+                            // Update ticker items
+                            tickerItems.forEach((item, index) => {
+                                const update = top10[index];
+                                item.textContent = `${update.name} was ${formatTimestamp(update.lastSeen)}`;
+                            });
+                        }
+                    }
+                }).catch((error) => {
+                    console.error('Error loading last seen for ' + person.name, error);
+                });
+            });
+        }
+
+        function adjustLayout() {
+            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+            const imgHeightRatio = 0.15; // 15% of viewport height
+            const imgHeight = vh * imgHeightRatio;
+            const columns = window.innerWidth >= 1200 ? 4 : (window.innerWidth >= 768 ? 3 : (window.innerWidth >= 500 ? 2 : 1));
+
+            document.documentElement.style.setProperty('--img-height', `${imgHeight}px`);
+            document.documentElement.style.setProperty('--columns', columns);
+        }
+
+        function updateFilter() {
+            const selectedCategories = Array.from(document.querySelectorAll('md-filter-chip'))
+                .filter(chip => chip.classList.contains('selected')) // Check for 'selected' class
+                .map(chip => chip.dataset.category);
+
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.display = selectedCategories.length === 0 || selectedCategories.includes(card.dataset.category)
+                    ? 'block'
+                    : 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTicker();
+            setInterval(updateTicker, 1000);
+            createListItems();
+            loadLastSeen();
+            adjustLayout();
+            loadAlertStates();
+            updateTicker();
+            
+            window.addEventListener('resize', adjustLayout);
+
+            const filterChips = document.querySelectorAll('md-filter-chip');
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    chip.classList.toggle('selected'); // Use class to indicate selection
+                    updateFilter();
+                });
+            });
+
+            // Initial filter update
+            updateFilter();
+
+            // Font loading
+            const fontLoader = new FontFace('Space Grotesk', 'url(https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap)', {
+                weight: '300 700',
+                style: 'normal'
+            });
+
+            fontLoader.load().then((font) => {
+                document.fonts.add(font);
+            }).catch((error) => {
+                console.error('Error loading font:', error);
             });
         });
-    }
-
-    function adjustLayout() {
-        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-        const imgHeightRatio = 0.15; // 15% of viewport height
-        const imgHeight = vh * imgHeightRatio;
-        const columns = window.innerWidth >= 1200 ? 4 : (window.innerWidth >= 768 ? 3 : (window.innerWidth >= 500 ? 2 : 1));
-
-        document.documentElement.style.setProperty('--img-height', `${imgHeight}px`);
-        document.documentElement.style.setProperty('--columns', columns);
-    }
-
-    function updateFilter() {
-        const selectedCategories = Array.from(document.querySelectorAll('md-filter-chip'))
-            .filter(chip => chip.classList.contains('selected')) // Check for 'selected' class
-            .map(chip => chip.dataset.category);
-
-        document.querySelectorAll('.card').forEach(card => {
-            card.style.display = selectedCategories.length === 0 || selectedCategories.includes(card.dataset.category)
-                ? 'block'
-                : 'none';
+        document.querySelector('.alert-button').addEventListener('click', () => {
+            document.getElementById('alertBanner').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('alertBanner').classList.remove('show');
+            }, 3000);
         });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        createListItems();
-        loadLastSeen();
-        adjustLayout();
-        loadAlertStates();
-        window.addEventListener('resize', adjustLayout);
-
-        const filterChips = document.querySelectorAll('md-filter-chip');
-        filterChips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                chip.classList.toggle('selected'); // Use class to indicate selection
-                updateFilter();
-            });
-        });
-
-        // Initial filter update
-        updateFilter();
-
-        // Font loading
-        const fontLoader = new FontFace('Space Grotesk', 'url(https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap)', {
-            weight: '300 700',
-            style: 'normal'
-        });
-
-        fontLoader.load().then((font) => {
-            document.fonts.add(font);
-        }).catch((error) => {
-            console.error('Error loading font:', error);
-        });
-    });
-    document.querySelector('.alert-button').addEventListener('click', () => {
-        document.getElementById('alertBanner').classList.add('show');
-        setTimeout(() => {
-            document.getElementById('alertBanner').classList.remove('show');
-        }, 3000);
-    });
-</script>
+    </script>
 </body>
 </html>
