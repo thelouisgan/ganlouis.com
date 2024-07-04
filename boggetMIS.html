@@ -218,7 +218,7 @@
         .ticker {
             display: flex;
             white-space: nowrap;
-            animation: ticker 10s linear infinite;
+            animation: ticker 20s linear infinite;
         }
 
         .ticker-item {
@@ -232,16 +232,18 @@
             overflow: hidden;
             text-overflow: ellipsis;
             transition: font-weight 0.2s ease;
+            will-change: transform; /* Optimize for animations */
         }
 
         .ticker-item:hover {
             font-weight: 700;
-            transition: font-weight 0.3s ease;
+            /* Keep the transition consistent to avoid flickering */
         }
 
-
-        .ticker-hover {
-            animation-play-state: paused;
+        .ticker-item.alert {
+            background-color: #ff0000;
+            color: #ffffff;
+            font-weight: bold;
         }
 
         @keyframes ticker {
@@ -251,6 +253,10 @@
             100% {
                 transform: translate3d(-100%, 0, 0);
             }
+        }
+
+        .ticker-item:hover {
+            animation-play-state: paused;
         }
 
         md-filter-chip {
@@ -553,35 +559,54 @@
         }
 
         function updateTicker() {
-            const tickerItems = document.querySelectorAll('.ticker-item');
+            const tickerContainer = document.getElementById('ticker');
+            tickerContainer.innerHTML = ''; // Clear existing items
             const recentUpdates = [];
+            const alertedItems = [];
 
             people.forEach(person => {
                 firebase.database().ref('boggetMIS/' + person.name).get().then((snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
                         const lastSeenTimestamp = data.lastSeen;
-                        recentUpdates.push({
-                            name: person.name,
-                            lastSeen: lastSeenTimestamp
-                        });
+                        const isAlerted = data.alertstats || false;
+                        
+                        if (isAlerted) {
+                            alertedItems.push({
+                                name: person.name,
+                                lastSeen: lastSeenTimestamp
+                            });
+                        } else {
+                            recentUpdates.push({
+                                name: person.name,
+                                lastSeen: lastSeenTimestamp
+                            });
+                        }
 
-                        if (recentUpdates.length === people.length) {
+                        if (recentUpdates.length + alertedItems.length === people.length) {
                             // Sort updates by most recent
                             recentUpdates.sort((a, b) => b.lastSeen - a.lastSeen);
+                            alertedItems.sort((a, b) => b.lastSeen - a.lastSeen);
 
-                            // Take top 10
-                            const top10 = recentUpdates.slice(0, 10);
+                            // Combine alerted items and recent updates
+                            const combinedUpdates = [...alertedItems, ...recentUpdates];
 
-                            // Update ticker items
-                            tickerItems.forEach((item, index) => {
-                                const update = top10[index];
-                                item.textContent = `${update.name} was ${formatTimestamp(update.lastSeen)}`;
+                            // Create and append ticker items
+                            combinedUpdates.forEach((update) => {
+                                const tickerItem = document.createElement('div');
+                                tickerItem.className = 'ticker-item';
+                                if (alertedItems.includes(update)) {
+                                    tickerItem.classList.add('alert');
+                                    tickerItem.textContent = `ALERT | ${update.name} was ${formatTimestamp(update.lastSeen)}`;
+                                } else {
+                                    tickerItem.textContent = `${update.name} was ${formatTimestamp(update.lastSeen)}`;
+                                }
+                                tickerContainer.appendChild(tickerItem);
                             });
                         }
                     }
                 }).catch((error) => {
-                    console.error('Error loading last seen for ' + person.name, error);
+                    console.error('Error loading data for ' + person.name, error);
                 });
             });
         }
@@ -622,12 +647,10 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             updateTicker();
-            setInterval(updateTicker, 1000);
             createListItems();
             loadLastSeen();
             adjustLayout();
             loadAlertStates();
-            updateTicker();
             
             window.addEventListener('resize', adjustLayout);
 
