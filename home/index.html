@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" href="style.css">
-
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <script src="script.js" defer></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Louis Gan - My Hobbies</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
+</head>
 <body>
-    <div class="text-container">
-        <div class="louisgan-text">Louis Gan</div>
-        <div class="hobbies-text">My Hobbies</div>
+    <div class="background-container">
+        <img src="assets/img/background.webp" alt="Background">
     </div>
     
-    <div class="cards-container">
-        <div class="card">
-            <img src="https://ganlouis.com/wp-content/uploads/2023/06/img20230310223922-1536x2048.jpeg" alt="Programmer">
-            <div class="card-title">Programmer</div>
-            <div class="glow"></div>
+    <div class="content-container">
+        <div class="fixed-content">
+            <div class="text-container">
+                <div class="louisgan-text">Louis Gan</div>
+                <div class="hobbies-text">My Hobbies</div>
+            </div>
         </div>
-        <div class="card">
-            <img src="https://instagram.fjhb2-1.fna.fbcdn.net/v/t51.29350-15/448905589_410921608615250_4685460312869558351_n.jpg?stp=dst-jpg_e35_p1080x1080&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MCJ9&_nc_ht=instagram.fjhb2-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=Z6l4SHLqpm4Q7kNvgGCriIx&gid=4c24ee68ef2b4e158cc60fdaff481e00&edm=ALQROFkBAAAA&ccb=7-5&ig_cache_key=MzM5NjIxNTE5MTMwMTExNzY5Ng%3D%3D.2-ccb7-5&oh=00_AYAYxP4009Yg4n2G-avt3jGc9p54KgBuP7zylWy_KfosJQ&oe=6693B90D&_nc_sid=fc8dfb" alt="Designer">
-            <div class="card-title">Designer</div>
-            <div class="glow"></div>
-        </div>
-        <div class="card">
-            <img src="https://instagram.fjhb2-1.fna.fbcdn.net/v/t51.29350-15/434069492_1361128088616635_6515279968579053502_n.webp?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xMDgweDEwODAuc2RyLmYyOTM1MCJ9&_nc_ht=instagram.fjhb2-1.fna.fbcdn.net&_nc_cat=111&_nc_ohc=H1YBA7VJHtsQ7kNvgEp-xF_&edm=AEhyXUkBAAAA&ccb=7-5&ig_cache_key=MzMyNzk3MDgyNDQ0MjE3NDQ2Mw%3D%3D.2-ccb7-5&oh=00_AYAzxu9yphH2FrJvbK50Cp9rsBFeBuVJwBv7rW_0A15W1A&oe=6693C649&_nc_sid=8f1549" alt="Musician">
-            <div class="card-title">Musician</div>
-            <div class="glow"></div>
-        </div>
-        <div class="card">
-            <img src="https://instagram.fjhb2-1.fna.fbcdn.net/v/t51.29350-15/330265407_1774122246315053_7982969186951649101_n.webp?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE0NDAuc2RyLmYyOTM1MCJ9&_nc_ht=instagram.fjhb2-1.fna.fbcdn.net&_nc_cat=105&_nc_ohc=526i8yABgxcQ7kNvgGfIPmK&edm=AFg4Q8wBAAAA&ccb=7-5&ig_cache_key=MzAzNzE5OTczMjIxNzUzOTI4NA%3D%3D.2-ccb7-5&oh=00_AYCEoEOI1BNAkcFtNZhhsT1c1VNzN-cD4Jdymx5jn8Dh0A&oe=6693C54E&_nc_sid=0b30b7" alt="Photographer">
-            <div class="card-title">Photographer</div>
-            <div class="glow"></div>
+        
+        <div class="scroll-container">
+            <div class="cards-container">
+                <div class="card" data-hobby="Programmer">
+                    <img src="https://ganlouis.com/wp-content/uploads/2023/06/img20230310223922-1536x2048.jpeg" alt="Programmer">
+                    <div class="card-title">Programmer</div>
+                    <div class="glow"></div>
+                </div>
+                <div class="card" data-hobby="Designer">
+                    <img src="/assets/img/design.webp" alt="Designer">
+                    <div class="card-title">Designer</div>
+                    <div class="glow"></div>
+                </div>
+                <div class="card" data-hobby="Musician">
+                    <img src="/assets/img/music.webp" alt="Musician">
+                    <div class="card-title">Musician</div>
+                    <div class="glow"></div>
+                </div>
+                <div class="card" data-hobby="Photographer">
+                    <img src="/assets/img/photography.webp" alt="Photographer">
+                    <div class="card-title">Photographer</div>
+                    <div class="glow"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <img src="assets/img/background.png" alt="Background">
-    <script src="script.js"></script>
+    <div class="projects-section">
+        <h2>Projects</h2>
+        <p>This is a placeholder for the Projects section. Add your content here.</p>
+    </div>
 </body>
 </html>
