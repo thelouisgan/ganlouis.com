@@ -117,9 +117,43 @@ body, html {
     max-width: calc(100% - 20px);
 }
 
+.ticker-container {
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+    background-color: white;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.ticker-content {
+    display: flex;
+    white-space: nowrap;
+
+    animation: ticker 60s linear infinite;
+}
+
+.ticker-text {
+    display: inline-block;
+    padding: 2px 2rem;
+    font-family: 'Archivo', sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
+    color: black;
+}
+
+@keyframes ticker {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-100%, 0, 0);
+    }
+}
+
 @media (max-width: 768px) {
     .content-container {
-        padding: 10px;
+        padding: 30px;
     }
 
     .text-container {
@@ -140,15 +174,15 @@ body, html {
         left: 0;
         width: 100%;
         height: auto;
-        max-height: 50%;
+        max-height: 75%;
     }
 
     .cards-container {
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: nowrap;
         justify-content: flex-start;
         align-items: flex-start;
-        padding: 10px;
+        padding-left: 30px;
         overflow-x: auto;
         overflow-y: hidden;
     }
@@ -158,5 +192,14 @@ body, html {
         max-width: none;
         height: 150px;
         margin-right: 10px;
+    }
+
+    .ticker-container {
+        height: 30px;
+    }
+
+    .ticker-text {
+        font-size: 1.4rem;
+        padding: 3px 1rem;
     }
 }
