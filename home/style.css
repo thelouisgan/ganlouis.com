@@ -55,6 +55,7 @@ body, html {
     font-weight: 400;
     color: #172d19;
     line-height: 1.2;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .cards-outer-container {
@@ -117,39 +118,69 @@ body, html {
     max-width: calc(100% - 20px);
 }
 
-.ticker-container {
+/* Ticker styles */
+.ticker-wrap {
     width: 100%;
-    height: 40px;
     overflow: hidden;
     background-color: white;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    padding-left: 100%;
+    box-sizing: content-box;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
 }
 
-.ticker-content {
-    display: flex;
-    white-space: nowrap;
-
-    animation: ticker 60s linear infinite;
-}
-
-.ticker-text {
+.ticker {
     display: inline-block;
-    padding: 2px 2rem;
+    height: 40px;
+    line-height: 40px;
+    white-space: nowrap;
+    padding-right: 100%;
+    box-sizing: content-box;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-name: ticker;
+    animation-name: ticker;
+    -webkit-animation-duration: 60s;
+    animation-duration: 60s;
+}
+
+.ticker__item {
+    display: inline-block;
+    padding: 0 2rem;
     font-family: 'Archivo', sans-serif;
     font-weight: bold;
     font-size: 2rem;
     color: black;
 }
 
-@keyframes ticker {
+@-webkit-keyframes ticker {
     0% {
+        -webkit-transform: translate3d(0, 0, 0);
         transform: translate3d(0, 0, 0);
+        visibility: visible;
     }
+
     100% {
+        -webkit-transform: translate3d(-100%, 0, 0);
         transform: translate3d(-100%, 0, 0);
     }
 }
+
+@keyframes ticker {
+    0% {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        visibility: visible;
+    }
+
+    100% {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+    }
+}
+
 
 @media (max-width: 768px) {
     .content-container {
@@ -194,12 +225,17 @@ body, html {
         margin-right: 10px;
     }
 
-    .ticker-container {
+    .ticker-wrap {
         height: 30px;
     }
 
-    .ticker-text {
+    .ticker {
+        height: 30px;
+        line-height: 30px;
+    }
+
+    .ticker__item {
         font-size: 1.4rem;
-        padding: 3px 1rem;
+        padding: 0 1rem;
     }
 }
