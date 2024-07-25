@@ -118,8 +118,8 @@ body, html {
     max-width: calc(100% - 20px);
 }
 
-/* Ticker styles */
 .ticker-wrap {
+    position: relative;
     width: 100%;
     overflow: hidden;
     background-color: white;
@@ -129,12 +129,61 @@ body, html {
     border-bottom: 2px solid black;
 }
 
+.protruding-div {
+    position: fixed;
+    left: 0;
+    top: 72%;
+    transform: translateY(-50%) scale(1.2);
+    width: 60px;
+    height: 60px;
+    z-index: 10;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 30px;
+}
+
+.protruding-div img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.bottom-image {
+    z-index: 1;
+    animation: rotate 15s linear infinite;
+}
+
+/*
+.bottom-image:hover {
+    animation-play-state: paused;
+}
+*/
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.top-image {
+    z-index: 2;
+    height: 72% !important;
+}
+
 .ticker {
     display: inline-block;
     height: 40px;
     line-height: 40px;
     white-space: nowrap;
     padding-right: 100%;
+    padding-left: 90px; /* Add space for the protruding div */
     box-sizing: content-box;
     -webkit-animation-iteration-count: infinite;
     animation-iteration-count: infinite;
@@ -237,5 +286,16 @@ body, html {
     .ticker__item {
         font-size: 1.4rem;
         padding: 0 1rem;
+    }
+
+    .protruding-div {
+        width: 50px;
+        height: 50px;
+        transform: translateY(-50%) scale(1.1);
+        margin-left: 5px;
+    }
+
+    .ticker {
+        padding-left: 70px;
     }
 }
