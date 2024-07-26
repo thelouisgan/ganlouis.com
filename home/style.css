@@ -7,8 +7,9 @@ body, html {
 }
 
 .header {
-    background-color: #333;
-    color: #fff;
+    background-color: #ffffff;
+    color: #000000;
+    border-bottom: #000000 2px solid;
     padding: 0.5rem 1rem;
     position: fixed;
     top: 0;
@@ -22,7 +23,7 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
 }
 
@@ -44,7 +45,7 @@ body, html {
 }
 
 .nav-link {
-    color: #fff;
+    color: #000000;
     text-decoration: none;
     font-size: 1rem;
     transition: color 0.3s ease;
@@ -53,17 +54,27 @@ body, html {
 }
 
 .nav-link:hover {
-    color: #ddd;
+    font-weight: bold;
+    transition: font-weight 0.2s ease;
 }
 
 .dropdown {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #444;
+    background-color: #fffefe;
+    border: #000000 2px solid;
     min-width: 200px;
     display: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown li {
+    margin: 0;
+    padding: 0;
 }
 
 .nav-item:hover .dropdown {
@@ -73,13 +84,13 @@ body, html {
 .dropdown-link {
     display: block;
     padding: 0.5rem 1rem;
-    color: #fff;
+    transition: font-weight 0.3s ease;
+    color: #000000;
     text-decoration: none;
-    transition: background-color 0.3s ease;
 }
 
-.dropdown-link:hover {
-    background-color: #555;
+.dropdown-link:hover { 
+    font-weight: bold;
 }
 
 .nav-toggle {
@@ -549,7 +560,7 @@ body, html {
 .protruding-div {
     position: fixed;
     left: 0;
-    top: 72%;
+    top: 80%;
     transform: translateY(-50%) scale(1.2);
     width: 60px;
     height: 60px;
