@@ -5,6 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Registration System</title>
     <style>
+        .header {
+            background-color: #ffffff;
+            color: #000000;
+            border-bottom: #000000 2px solid;
+            padding: 0.5rem 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            font-family: 'Archivo', sans-serif;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            position: relative;
+            margin-left: 1.5rem;
+        }
+
+        .nav-link {
+            color: #000000;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 1rem 0;
+            display: block;
+            font-weight: 400;
+            transition: font-weight 0.2s ease;
+        }
+
+        .nav-link:hover {
+            font-weight: 800;
+        }
+
+        .dropdown {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fffefe;
+            border: #000000 2px solid;
+            min-width: 200px;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            transition: font-weight 0.3s ease;
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .dropdown-link:hover { 
+            font-weight: bold;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: #333;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-item {
+                margin: 0;
+                text-align: center;
+            }
+
+            .nav-link {
+                padding: 0.5rem 1rem;
+            }
+
+            .dropdown {
+                position: static;
+                display: none;
+                background-color: #444;
+                width: 100%;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+        }
+
         :root {
             --my-brand-font: 'Open Sans';
             --my-headline-font: 'Montserrat';
@@ -24,7 +156,7 @@
             font-weight: 400;
             font-style: normal;
             margin: 0;
-            padding: 0;
+            padding-top:66px;
             font-size: 1.2rem;
         }
 
@@ -203,60 +335,64 @@
             color: white;
         }
 
-        .ticker-wrap {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .marquee-container {
             width: 100%;
-            background-color: #ffffff;
-            padding: 10px 0;
             overflow: hidden;
-            z-index: 1000;
+            position: fixed;
+            top: 66px;
+            left: 0;
+            background-color: #ffffff;
             border-bottom: #000000 1px solid;
+            z-index: 90;
         }
 
-        .ticker {
+        .marquee {
             display: flex;
-            white-space: nowrap;
-            animation: ticker 20s linear infinite;
+            width: 200%;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-content {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 10px 0;
         }
 
         .ticker-item {
-            display: inline-block;
-            border: 1px solid #000000;
-            margin: 0 5px;
-            border-radius: 4px;
-            padding: 0 5px;
-            flex-shrink: 0;
+            flex: 0 0 auto;
+            padding: 2px 5px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            color: black;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            margin: 0 5px;
             transition: font-weight 0.2s ease;
-            will-change: transform; /* Optimize for animations */
         }
 
         .ticker-item:hover {
             font-weight: 700;
-            /* Keep the transition consistent to avoid flickering */
         }
 
         .ticker-item.alert {
             background-color: #ff0000;
             color: #ffffff;
-            font-weight: bold;
         }
 
-        @keyframes ticker {
+        @keyframes marquee {
             0% {
-                transform: translate3d(0, 0, 0);
+                transform: translateX(0);
             }
             100% {
-                transform: translate3d(-100%, 0, 0);
+                transform: translateX(-50%);
             }
         }
 
-        .ticker-item:hover {
-            animation-play-state: paused;
+        .ticker-wrap, .ticker {
+            display: none;
         }
 
         md-filter-chip {
@@ -293,19 +429,110 @@
 </head>
 <body>
 
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">Louis Gan</div>
+            <button class="nav-toggle" aria-label="toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">BoggetDots</a>
+                    <ul class="dropdown">
+                        <li><a href="https://ganlouis.com/streak/" class="dropdown-link">BoggetDots Daily Streak Check-in</a></li>
+                        <li><a href="https://ganlouis.com/boggetdots-dashboard/" class="dropdown-link">BoggetDots Dashboard</a></li>
+                        <li><a href="https://ganlouis.com/boggetearn/" class="dropdown-link">BoggetDots Earn</a></li>
+                        <li><a href="https://ganlouis.com/boggetmis/" class="dropdown-link">Bogget Registration Portal</a></li>
+                        <li><a href="https://ganlouis.com/boggetshop/" class="dropdown-link">BoggetDots Shop</a></li>
+                        <li><a href="https://ganlouis.com/boggetpay/" class="dropdown-link">BoggetPay</a></li>
+                        <li><a href="https://ganlouis.com/boggetdots/" class="dropdown-link">BoggetDots Showcase</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Music</a>
+                    <ul class="dropdown">
+                        <li><a href="https://ganlouis.com/category/programming/" class="dropdown-link">DevLogs</a>
+                            <ul class="dropdown">
+                                <li><a href="https://ganlouis.com/programming/whw2023introduction/" class="dropdown-link">WHW HackClub 2023 Introduction</a>
+                                    <ul class="dropdown">
+                                        <li><a href="https://ganlouis.com/programming/whw2023components/" class="dropdown-link">WHW HackClub 2023 Components</a></li>
+                                        <li><a href="https://ganlouis.com/programming/whw2023programming/" class="dropdown-link">WHW HackClub 2023 Programming + Testing</a></li>
+                                        <li><a href="https://ganlouis.com/programming/whw2023/" class="dropdown-link">WHW HackClub 2023 Final Results!</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="https://ganlouis.com/programming/led/" class="dropdown-link">Displaying .BMP with NeoPixel RGB LED Matrix (WS2812B) on Arduino</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://ganlouis.com/music/hybrid-pitch/" class="dropdown-link">hybrid pitch</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Funstuffs</a>
+                    <ul class="dropdown">
+                        <li><a href="https://ganlouis.com/tamp/" class="dropdown-link">TAMP</a>
+                            <ul class="dropdown">
+                                <li><a href="https://ganlouis.com/tirf/" class="dropdown-link">TIRF</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://ganlouis.com/agm/" class="dropdown-link">AGM Society</a></li>
+                        <li><a href="https://ganlouis.com/robloxcup.html" class="dropdown-link">Roblox Developer's Cup</a>
+                            <ul class="dropdown">
+                                <li><a href="https://ganlouis.com/search-engine-optimiser/" class="dropdown-link">Search Engine Optimiser</a></li>
+                                <li><a href="https://ganlouis.com/bogton/" class="dropdown-link">BOGGET BUTTON</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://ganlouis.com/donations.html" class="dropdown-link">Donations</a></li>
+                        <li><a href="https://ganlouis.com/qr-gen/" class="dropdown-link">QR Code Generator</a></li>
+                        <li><a href="https://ganlouis.com/arc-browser/" class="dropdown-link">Arc Browser</a></li>
+                        <li><a href="https://ganlouis.com/nfc/" class="dropdown-link">NFC</a></li>
+                        <li><a href="https://ganlouis.com/ping/" class="dropdown-link">ping</a>
+                            <ul class="dropdown">
+                                <li><a href="https://ganlouis.com/pong/" class="dropdown-link">pong</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://ganlouis.com/tta/" class="dropdown-link">Times Tables Game</a>
+                            <ul class="dropdown">
+                                <li><a href="https://ganlouis.com/ttq/" class="dropdown-link">Times Tables Game – Answers</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="https://ganlouis.com/zaid/" class="dropdown-link">zaid mamad</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="https://ganlouis.com/citrus/" class="nav-link">The Citrus</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">The Great War</a>
+                    <ul class="dropdown">
+                        <li><a href="https://ganlouis.com/terry/" class="dropdown-link">beep beep go kaboom</a></li>
+                        <li><a href="https://ganlouis.com/louisland/" class="dropdown-link">warbombs</a></li>
+                        <li><a href="https://ganlouis.com/shellwar/" class="dropdown-link">official shell war documents</a></li>
+                        <li><a href="https://ganlouis.com/sangjun/" class="dropdown-link">leemania's weapon list</a></li>
+                        <li><a href="https://ganlouis.com/terrygpt/" class="dropdown-link">terry</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Social Media</a>
+                    <ul class="dropdown">
+                        <li><a href="https://youtube.com/louisgan" class="dropdown-link">YouTube</a></li>
+                        <li><a href="https://instagram.com/thelouisgan" class="dropdown-link">Instagram</a></li>
+                        <li><a href="https://github.com/thelouisgan" class="dropdown-link">GitHub</a></li>
+                        <li><a href="https://www.behance.net/ganlouis" class="dropdown-link">Behance</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-    <div class="ticker-wrap">
-        <div class="ticker" id="ticker">
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
-            <div class="ticker-item"></div>
+
+    <div class="marquee-container">
+        <div class="marquee">
+            <div class="marquee-content" id="tickerContent">
+                <!-- Empty for now, JS will dynamically add tickers here -->
+            </div>
+            <div class="marquee-content" id="tickerContentClone">
+                <!-- Clone of ticker items for seamless looping -->
+            </div>
         </div>
     </div>
 
@@ -559,8 +786,9 @@
         }
 
         function updateTicker() {
-            const tickerContainer = document.getElementById('ticker');
-            tickerContainer.innerHTML = ''; // Clear existing items
+            const tickerContent = document.getElementById('tickerContent');
+            const tickerContentClone = document.getElementById('tickerContentClone');
+            tickerContent.innerHTML = ''; // Clear existing items
             const recentUpdates = [];
             const alertedItems = [];
 
@@ -593,7 +821,7 @@
 
                             // Create and append ticker items
                             combinedUpdates.forEach((update) => {
-                                const tickerItem = document.createElement('div');
+                                const tickerItem = document.createElement('span');
                                 tickerItem.className = 'ticker-item';
                                 if (alertedItems.includes(update)) {
                                     tickerItem.classList.add('alert');
@@ -601,8 +829,11 @@
                                 } else {
                                     tickerItem.textContent = `${update.name} was ${formatTimestamp(update.lastSeen)}`;
                                 }
-                                tickerContainer.appendChild(tickerItem);
+                                tickerContent.appendChild(tickerItem);
                             });
+
+                            // Clone the content for seamless looping
+                            tickerContentClone.innerHTML = tickerContent.innerHTML;
                         }
                     }
                 }).catch((error) => {
