@@ -16,6 +16,8 @@
             right: 0;
             z-index: 1000;
             font-family: 'Archivo', sans-serif;
+            display: flex;
+            align-items: center;
         }
 
         .nav-container {
@@ -24,11 +26,22 @@
             align-items: center;
             max-width: 1300px;
             margin: 0 auto;
+            width: 100%;
         }
 
         .logo {
+            font-family: 'Archivo', sans-serif;
             font-size: 1.5rem;
-            font-weight: bold;
+            font-weight: 700;
+            color: #000000;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            transition: font-size 0.2s ease;
+        }
+
+        .logo:hover {
+            color: #00000065;
+            font-size: 1.52rem;
         }
 
         .nav-menu {
@@ -92,16 +105,21 @@
             font-weight: bold;
         }
 
+
         .nav-toggle {
             display: none;
             background: none;
             border: none;
-            color: #fff;
+            color: #000;
             font-size: 1.5rem;
             cursor: pointer;
         }
 
         @media (max-width: 768px) {
+            .header {
+                height: 48px;
+            }
+
             .nav-menu {
                 display: none;
                 flex-direction: column;
@@ -109,11 +127,16 @@
                 top: 100%;
                 left: 0;
                 right: 0;
-                background-color: #333;
+                background-color: #fff;
+                border-bottom: 1px solid #000;
             }
 
             .nav-menu.active {
-                display: flex;
+                display: block;
+            }
+
+            .nav-toggle {
+                display: block;
             }
 
             .nav-item {
@@ -128,11 +151,15 @@
             .dropdown {
                 position: static;
                 display: none;
-                background-color: #444;
+                background-color: #f9f9f9;
                 width: 100%;
             }
 
-            .nav-toggle {
+            .nav-item:hover .dropdown {
+                display: none;
+            }
+
+            .nav-item.active .dropdown {
                 display: block;
             }
         }
@@ -431,9 +458,9 @@
 
     <header class="header">
         <nav class="nav-container">
-            <div class="logo">Louis Gan</div>
+            <div><a href="https://ganlouis.com/" class="logo">Louis Gan</a></div>
             <button class="nav-toggle" aria-label="toggle navigation">
-                <i class="fas fa-bars"></i>
+                ☰
             </button>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -913,6 +940,34 @@
             setTimeout(() => {
                 document.getElementById('alertBanner').classList.remove('show');
             }, 3000);
+        });
+
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            const dropdown = item.querySelector('.dropdown');
+            
+            if (link && dropdown) {
+                link.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                        item.classList.toggle('active');
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
         });
     </script>
 </body>
