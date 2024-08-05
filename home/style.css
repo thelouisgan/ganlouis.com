@@ -1,4 +1,4 @@
-body, html {
+body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -17,6 +17,7 @@ body, html {
     right: 0;
     z-index: 1000;
     font-family: 'Archivo', sans-serif;
+
 }
 
 .nav-container {
@@ -138,19 +139,6 @@ body, html {
     }
 }
 
-.background-container {
-    position: relative;
-    width: 100%;
-    height: 70%;
-    overflow: hidden;
-}
-
-.background-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 .content-container {
     position: absolute;
     top: 0;
@@ -249,54 +237,6 @@ body, html {
     border-radius: 15px;
     padding: 5px 10px;
     max-width: calc(100% - 20px);
-}
-
-.protruding-div {
-    position: fixed;
-    left: 0;
-    top: 72%;
-    transform: translateY(-50%) scale(1.2);
-    width: 60px;
-    height: 60px;
-    z-index: 10;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 30px;
-}
-
-.protruding-div img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.bottom-image {
-    z-index: 1;
-    animation: rotate 15s linear infinite;
-}
-
-/*
-.bottom-image:hover {
-    animation-play-state: paused;
-}
-*/
-
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.top-image {
-    z-index: 2;
-    height: 72% !important;
 }
 
 @-webkit-keyframes ticker {
@@ -398,14 +338,21 @@ body, html {
 .background-container {
     position: relative;
     width: 100%;
-    height: 70%;
+    height: 100vh;
     overflow: hidden;
+    max-height: 60vh;
+
+    background-image: url('assets/img/background_lg.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .background-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform-origin: 50% 50%;
 }
 
 .content-container {
@@ -511,7 +458,7 @@ body, html {
 .protruding-div {
     position: absolute;
     left: 30px;
-    top: 73.5%;
+    top: 66.5vh;
     transform: translateY(-50%) scale(1.2);
     width: 60px;
     height: 60px;
@@ -521,6 +468,7 @@ body, html {
     justify-content: center;
     align-items: center;
     pointer-events: none;
+    margin-left: 30px;
   }
   
   .protruding-div img {
