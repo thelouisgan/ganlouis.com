@@ -1,3 +1,5 @@
+Marquee3k.init()
+
 document.addEventListener('DOMContentLoaded', function() {
     const hobbiesElement = document.querySelector('.hobbies-text');
     const cards = document.querySelectorAll('.card');

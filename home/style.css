@@ -508,11 +508,68 @@ body {
     height: 72% !important;
 }
 
+/* .marquee3k {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    border-top: black 2px solid;
+    border-bottom: black 2px solid;
+}
+
+.marquee3k-items {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 20px;
+} */
+
+.marquee3k-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    border-top: black 2px solid;
+    border-bottom: black 2px solid;
+}
+
+.marquee3k__wrapper, .marquee3k, .marquee-innerlist {
+  overflow-y: initial;
+  margin: 5px;
+}
+
+.marquee-innerlist span{
+    flex: 0 0 auto;
+    padding: 10px 20px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: black;
+    white-space: nowrap;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .marquee-container {
     width: 100%;
     overflow: hidden;
     position: relative;
-    border: black 2px solid;
+    border-top: black 2px solid;
+    border-bottom: black 2px solid;
 }
 
 .marquee {

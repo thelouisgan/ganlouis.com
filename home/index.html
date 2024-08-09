@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <script src="script.js" defer></script>
 </head>
 <body style="position: relative; min-height: 100vh;">
     <header class="header">
@@ -147,7 +146,7 @@
         <img src="assets/img/scallop.svg" alt="Scallop" class="bottom-image">
         <img src="assets/img/LG Caligo.svg" alt="LG Caligo" class="top-image">
     </div>
-    <div class="marquee-container">
+    <!-- <div class="marquee-container">
         <div class="marquee">
             <div class="marquee-content">
                 <span class="ticker__item">LOUIS GAN</span>
@@ -168,7 +167,38 @@
                 <span class="ticker__item">GRAPHIC DESIGN</span>
             </div>
         </div>
+    </div> -->
+    <!-- <div class="marquee3k" 
+        data-speed="0.25"
+        data-reverse="false"
+        data-pausable="true">
+        <div class="marquee3k-items">
+            <div>LOUIS GAN </div>
+            <div>AMPHIBIOUS ROVER</div>
+            <div>THE PLATYMETER - CUSTOM PCB MULTIMETER</div>
+            <div>NFC ARCADE ANDROID APP</div>
+            <div>YOUTUBE</div>
+            <div>ARDUINO DESK CLOCK</div>
+            <div>GRAPHIC DESIGN</div>
+        </div>
+    </div> -->
+
+    <div class="marquee3k-wrapper">
+        <div class="marquee3k" data-pausable="true" data-speed="1">
+            <p class="marquee-innerlist">
+                <span>LOUIS GAN</span>
+                <span>AMPHIBIOUS ROVER</span>
+                <span>THE PLATYMETER - CUSTOM PCB MULTIMETER</span>
+                <span>NFC ARCADE ANDROID APP</span>
+                <span>YOUTUBE</span>
+                <span>ARDUINO DESK CLOCK</span>
+                <span>GRAPHIC DESIGN</span>
+            </p>
+        </div>
     </div>
+
+
+
     <div class="projects-container">
         <div class="project-item">
             <img src="https://ganlouis.com/wp-content/uploads/2023/06/img20230310223922-1536x2048.jpeg" alt="Triton Amphibious Rover" class="project-image">
@@ -197,5 +227,7 @@
             </div>
         </div>
     </div>
+    <script src="script.js" defer></script>
+    <script src="marquee3k.js"></script>
 </body>
 </html>
