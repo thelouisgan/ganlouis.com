@@ -1,5 +1,22 @@
 Marquee3k.init()
 
+document.body.onmousemove = function(e) {
+    document.documentElement.style.setProperty (
+      '--x', (
+        e.clientX+window.scrollX
+      )
+      + 'px'
+    );
+    document.documentElement.style.setProperty (
+      '--y', (
+        e.clientY+window.scrollY
+      ) 
+      + 'px'
+    );
+  }
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const hobbiesElement = document.querySelector('.hobbies-text');
     const cards = document.querySelectorAll('.card');
@@ -20,6 +37,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start cycling hobbies every 1 second
     setInterval(cycleHobbies, 2000);
+
+    // Handle hover effect on nav-link
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    navLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            document.getElementById('invertedcursor').classList.add('enlarged');
+        });
+
+        link.addEventListener('mouseleave', () => {
+            document.getElementById('invertedcursor').classList.remove('enlarged');
+        });
+    });
 });
 
 $(function() {
